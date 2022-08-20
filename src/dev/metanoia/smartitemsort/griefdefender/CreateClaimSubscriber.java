@@ -2,6 +2,8 @@ package dev.metanoia.smartitemsort.griefdefender;
 
 import com.griefdefender.api.event.CreateClaimEvent;
 import com.griefdefender.lib.kyori.event.EventSubscriber;
+import dev.metanoia.smartitemsort.SmartItemSort;
+import dev.metanoia.smartitemsort.plugin.SmartItemSortPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -21,7 +23,8 @@ class CreateClaimSubscriber implements EventSubscriber<CreateClaimEvent.Post> {
     public void on(final CreateClaimEvent.Post event) throws Throwable {
         final World world = Bukkit.getWorld(event.getClaim().getWorldUniqueId());
 
-        debug(() -> String.format("New Grief Defender claim created in %s", world));
+        debug(() -> String.format("New Grief Defender claim created in %s", world.getName()));
+        SmartItemSortPlugin.invalidateCache(world);
     }
 
 

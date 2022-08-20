@@ -2,6 +2,7 @@ package dev.metanoia.smartitemsort.griefdefender;
 
 import com.griefdefender.api.event.RemoveClaimEvent;
 import com.griefdefender.lib.kyori.event.EventSubscriber;
+import dev.metanoia.smartitemsort.plugin.SmartItemSortPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -21,7 +22,8 @@ class RemoveClaimSubscriber implements EventSubscriber<RemoveClaimEvent> {
     public void on(final RemoveClaimEvent event) throws Throwable {
         final World world = Bukkit.getWorld(event.getClaim().getWorldUniqueId());
 
-        debug(() -> String.format("Grief Defender claim removed in %s", world));
+        debug(() -> String.format("Grief Defender claim removed in %s", world.getName()));
+        SmartItemSortPlugin.invalidateCache(world);
     }
 
 

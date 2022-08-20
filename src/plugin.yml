@@ -1,6 +1,6 @@
 main:         'dev.metanoia.smartitemsort.griefdefender.SmartItemSortGriefDefender'
-name:         'SmartItemSortGriefDefender'
-version:      '0.2.0'
+name:         'SmartItemSort-GD'
+version:      '1.0.0'
 author:       'BornToCode'
 website:      'https://www.spigotmc.org/resources/smartitemsort-griefdefender.104646/'
 api-version:  '1.16'

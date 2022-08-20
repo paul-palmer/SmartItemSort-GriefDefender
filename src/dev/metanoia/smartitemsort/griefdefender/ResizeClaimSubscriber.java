@@ -2,6 +2,7 @@ package dev.metanoia.smartitemsort.griefdefender;
 
 import com.griefdefender.api.event.ChangeClaimEvent;
 import com.griefdefender.lib.kyori.event.EventSubscriber;
+import dev.metanoia.smartitemsort.plugin.SmartItemSortPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -21,7 +22,8 @@ class ResizeClaimSubscriber implements EventSubscriber<ChangeClaimEvent.Resize> 
     public void on(final ChangeClaimEvent.Resize event) throws Throwable {
         final World world = Bukkit.getWorld(event.getClaim().getWorldUniqueId());
 
-        debug(() -> String.format("Grief Defender claim changed size in %s", world));
+        debug(() -> String.format("Grief Defender resized claim in %s", world.getName()));
+        SmartItemSortPlugin.invalidateCache(world);
     }
 
 
