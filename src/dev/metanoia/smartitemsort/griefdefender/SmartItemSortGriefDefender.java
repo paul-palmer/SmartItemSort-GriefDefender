@@ -1,5 +1,9 @@
 package dev.metanoia.smartitemsort.griefdefender;
 
+import com.griefdefender.api.GriefDefender;
+import com.griefdefender.api.event.*;
+import com.griefdefender.lib.kyori.event.EventBus;
+import com.griefdefender.lib.kyori.event.EventSubscription;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,10 +23,6 @@ import static org.bukkit.Bukkit.getPluginManager;
 
 public final class SmartItemSortGriefDefender extends JavaPlugin {
 
-	private Config pluginConfig;
-	private ColorLogger logger;
-	private BindTargetListener listener;
-
 	@Override
 	public void onEnable() {
 		super.onEnable();
@@ -41,16 +41,35 @@ public final class SmartItemSortGriefDefender extends JavaPlugin {
 		this.logger = new ColorLogger(this);
 		this.pluginConfig = new Config(this);
 
-		// the whole purpose of this plugin is this event listener.
+		// listen for binding activity between item sorters and targets
 		listener = new BindTargetListener(this);
 		final PluginManager pluginManager = getPluginManager();
 		pluginManager.registerEvents(listener, this);
+
+		// Hook into GriefDefender event bus to be notified of changes to claims
+		final EventBus<Event> gdEventBus = GriefDefender.getEventManager().getBus();
+		this.changeClaimSubscription = gdEventBus.subscribe(ChangeClaimEvent.Resize.class, new ResizeClaimSubscriber(this));
+		this.createClaimSubscription = gdEventBus.subscribe(CreateClaimEvent.Post.class, new CreateClaimSubscriber(this));
+		this.loadClaimSubscription = gdEventBus.subscribe(LoadClaimEvent.Post.class, new LoadClaimSubscriber(this));
+		this.removeClaimSubscription = gdEventBus.subscribe(RemoveClaimEvent.class, new RemoveClaimSubscriber(this));
 
 		info(() -> String.format("Loaded %s by %s", getName(), getDescription().getAuthors()));
 	}
 
 
 	private void unload() {
+		this.removeClaimSubscription.unsubscribe();
+		this.removeClaimSubscription = null;
+
+		this.loadClaimSubscription.unsubscribe();
+		this.loadClaimSubscription = null;
+
+		this.createClaimSubscription.unsubscribe();
+		this.createClaimSubscription = null;
+
+		this.changeClaimSubscription.unsubscribe();
+		this.changeClaimSubscription = null;
+
 		HandlerList.unregisterAll(listener);
 		this.listener = null;
 
@@ -81,6 +100,19 @@ public final class SmartItemSortGriefDefender extends JavaPlugin {
 	public void error(Supplier<String> message) { this.logger.error(message); }
 	public void info(Supplier<String> message) { this.logger.info(message); }
 	public void trace(Supplier<String> message) { this.logger.trace(message); }
+
+
+	///
+	/// Private members
+	///
+
+	private Config pluginConfig;
+	private ColorLogger logger;
+	private BindTargetListener listener;
+	private EventSubscription changeClaimSubscription;
+	private EventSubscription createClaimSubscription;
+	private EventSubscription loadClaimSubscription;
+	private EventSubscription removeClaimSubscription;
 
 }
 

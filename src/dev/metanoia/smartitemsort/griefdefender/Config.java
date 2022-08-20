@@ -10,13 +10,6 @@ import java.util.logging.Level;
 
 class Config {
 
-    private final SmartItemSortGriefDefender plugin;
-    private final Level logLevel;
-    private final boolean allowFromUnclaimedLand;
-    private final boolean ignoreHeight;
-    private final boolean ignoreSubClaims;
-
-
     public Config(final SmartItemSortGriefDefender plugin) {
         this.plugin = plugin;
 
@@ -24,16 +17,12 @@ class Config {
 
         FileConfiguration pluginConfig = plugin.getConfig();
         pluginConfig.addDefault("allowFromUnclaimedLand", true);
-        pluginConfig.addDefault("ignoreHeight", false);
-        pluginConfig.addDefault("ignoreSubClaims", true);
         pluginConfig.addDefault("logLevel", "CONFIG");
 
         pluginConfig.options().copyDefaults(true);
         plugin.saveDefaultConfig();
 
         this.allowFromUnclaimedLand = pluginConfig.getBoolean("allowFromUnclaimedLand");
-        this.ignoreHeight = pluginConfig.getBoolean("ignoreHeight");
-        this.ignoreSubClaims = pluginConfig.getBoolean("ignoreSubClaims");
 
         this.logLevel = parseLogLevel(pluginConfig.getString("logLevel"));
         this.plugin.setLevel(this.logLevel);
@@ -54,17 +43,11 @@ class Config {
     public boolean getAllowFromUnclaimedLand() {
         return this.allowFromUnclaimedLand;
     }
-    public boolean getIgnoreHeight() {
-        return this.ignoreHeight;
-    }
-    public boolean getIgnoreSubClaims() {
-        return this.ignoreSubClaims;
-    }
 
 
 
     ///
-    /// Private
+    /// Private methods
     ///
 
     // create/overwrite an example config file that also documents the default values for each configuration
@@ -110,7 +93,21 @@ class Config {
     }
 
 
+    ///
+    /// Private forwarders
+    ///
+
+
     private void config(Supplier<String> message) { this.plugin.config(message); }
     private void error(Supplier<String> message) { this.plugin.error(message); }
+
+
+    ///
+    /// Private members
+    ///
+
+    private final SmartItemSortGriefDefender plugin;
+    private final Level logLevel;
+    private final boolean allowFromUnclaimedLand;
 
 }

@@ -10,7 +10,7 @@ import java.util.logging.Level;
 
 // ColorLogger is a simple colorized-logger for console messages
 
-public class ColorLogger {
+class ColorLogger {
     private static final Map<Level, LogLevel> levelMap = new HashMap<>() {{
         put(Level.SEVERE, LogLevel.ERROR);
         put(Level.WARNING, LogLevel.WARN);
